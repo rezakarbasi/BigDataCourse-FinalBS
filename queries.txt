@@ -1,4 +1,4 @@
-GET /messages/_count
+GET /messages/_search
 {
   "query": {
     "bool": {
