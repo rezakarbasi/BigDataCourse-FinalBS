@@ -1,0 +1,70 @@
+GET /messages/_count
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match_phrase": {
+            "emptytext": "مسکن"
+          }
+        },
+        {
+          "match_phrase": {
+            "channel_id.keyword": "bourseprofile"
+          }
+        },
+        {
+          "range": {
+            "timestampISO": {
+              "gte": "2020-07-01",
+              "lt": "2020-07-20"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET /messages/_search
+{
+  "aggs": {
+    "2": {
+      "terms": {
+        "field": "channel_id.keyword",
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match_phrase": {
+            "emptytext": "مسکن"
+          }
+        },
+        {
+          "range": {
+            "timestampISO": {
+              "gte": "2020-07-01",
+              "lt": "2020-07-20"
+            }
+          }
+        },
+        {
+          "range": {
+            "timestampISO": {
+              "gte": "2005-07-16T06:20:38.483Z",
+              "lte": "2020-07-16T06:20:38.483Z",
+              "format": "strict_date_optional_time"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
