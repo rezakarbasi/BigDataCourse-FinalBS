@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Task Master</title>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center">Update Task</h1>
+    {% for result in results %}
+    <h2>{{ result }}</h2>
+    {% endfor %}
+</div>
+{% endblock %}

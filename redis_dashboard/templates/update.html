@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>result Master</title>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center">Task Master</h1>
+    {% if results|length < 1 %}
+    <h4 style="text-align: center">There are no results. Create one below!</h4>
+    {% else %}
+    <table>
+        <tr>
+            <th>result</th>
+            <th>Added</th>
+            <th>Actions</th>
+        </tr>
+        {% for result in results %}
+            <tr>
+                <td>{{ result.content }}</td>
+                <td>{{ result.date_created.date() }}</td>
+                <td>
+                    <a href="/delete/{{result.id}}">Delete</a>
+                    <br>
+                    <a href="/update/{{result.id}}">Update</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <div class="form">
+        <form action="/" method="POST">
+            <input type="text" name="channel" id="channel">
+            <input type="number" name="ntimes_channel" id="ntimes_channel" min="1">
+            <input type="submit" name="channel_hour" value="Hours Ago">
+            <input type="submit" name="channel_day" value="Days Ago">
+            <input type="submit" name="channel_month" value="Months Ago"><br>
+            <input type="number" name="ntimes_total" id="ntimes_total" min="1">
+            <input type="submit" name="total_hour" value="Hours Ago">
+            <input type="submit" name="total_day" value="Days Ago">
+            <input type="submit" name="total_month" value="Months Ago"><br>
+            <input type="number" name="nhashtags" id="nhashtags" min="1">
+            <input type="submit" name="hashtag_hour" value="Hours Ago">
+            <input type="submit" name="hashtag_day" value="Days Ago">
+            <input type="submit" name="hashtag_month" value="Months Ago"><br>
+        </form>
+    </div>
+</div>
+{% endblock %}
