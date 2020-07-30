@@ -1,28 +1,19 @@
 import json
 import hashlib 
 
-def GetDataFromField(d , field):
-    if type(field) != list:
-        field=[field]
-    o=d
+import sys
+sys.path.append('/media/arzkarbasi/DataDrive/PersonalFiles/Projects/1_DarCProj/Big Data/final project/BigDataCourse-FinalBS/crawlers')
+from functions import GetDataFromField
 
-    for f in field:
-        if type(o) != dict:
-            return False,'ERROR DICT'
+path = './crawlers/soroush_crawler/DataSet.json'
+appendPath = './crawlers/soroush_crawler/crawlTest.json'
 
-        if f in o.keys() :
-            o=o[f]
-        else :
-            return False , o
-    return True , o
-
-with open('crawlTest.json' , 'r') as f:
+with open(appendPath , 'r') as f:
     data = json.load(f)
 
 out={'total':len(data),'messages':[]}
 
-
-for d in data[:] :
+for d in data :
     o={}
 
     o['channel_id'] = 'bourseprofile'           ### felan ine . badan bas doros she
@@ -32,7 +23,8 @@ for d in data[:] :
         if 'video' in typee.lower():
             o['type']='VIDEO'
         else :
-            b1 , imUrl = GetDataFromField(d,['mainEntityOfPage','@id'])
+            b1 , imUrl = GetDataFromField(d,['image'])
+            imUrl = imUrl[0]
             b2 , logoUrl = GetDataFromField(d,['publisher','logo','url'])
 
             if b1 and b2 :
@@ -68,10 +60,29 @@ for d in data[:] :
     o['timestampISO']=pub
 
     tagText='sapp/'+o['channel_id']+'/'+o['timestampISO']
-    o['message_id'] = hashlib.md5(tagText.encode()).digest()
+    o['message_id'] = hashlib.md5(tagText.encode()).hexdigest()
     o['id'] = o['message_id']
 
     o['hashtags'] = []
     o['keywords'] = []
 
     out['messages'].append(o)
+
+with open(path , 'r') as f:
+    preData = json.load(f)
+
+ids = list(map(lambda  z: z['id'],preData['messages']))
+
+for idx in range(len(out['messages'])-1,-1,-1):
+    d = out['messages'][idx]
+    if d['id'] in ids :
+        out['messages'].remove(d)
+        out['total'] -= 1
+    else :
+        preData['messages'].append(d)
+        preData['total'] += 1
+
+with open(path , 'w') as f:
+    json.dump(preData,f)
+
+print(str(out['total']) , ' data added to dataset file.')

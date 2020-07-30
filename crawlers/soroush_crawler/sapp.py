@@ -27,10 +27,9 @@ def get_channel_data(channel_name, size = 20, last_message_id = -1):
     rq = requests.post(url, data = message.encode("utf-8"), headers=headers)
     return json.loads(rq.text)
 
-a=get_channel_data("bourseprofile", 5)
+a=get_channel_data("bourseprofile", 2000)
 
 print(a)
-# import json
 
-# with open('test_crawl.json', 'w') as f:
-#     json.dump(a,f)
+with open('logged.json', 'w') as f:
+    json.dump(a,f)
