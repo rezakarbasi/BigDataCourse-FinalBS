@@ -14,3 +14,17 @@ def GetDataFromField(d, field):
         else:
             return False, o
     return True, o
+
+
+def GetHashtags(text):
+    t=text.replace('\n',' ')
+    idx = t.find('#')
+    out = []
+    while idx!=-1 :
+
+        t = t[idx+1:]
+        tag = t[:t.find(' ')]
+        out.append(tag)
+        idx = t.find('#')
+
+    return out

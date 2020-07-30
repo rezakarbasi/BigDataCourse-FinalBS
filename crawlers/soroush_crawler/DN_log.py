@@ -3,7 +3,7 @@ import hashlib
 
 import sys
 sys.path.append('/media/arzkarbasi/DataDrive/PersonalFiles/Projects/1_DarCProj/Big Data/final project/BigDataCourse-FinalBS/crawlers')
-from functions import GetDataFromField
+from functions import GetDataFromField , GetHashtags
 
 path = './crawlers/soroush_crawler/DataSet.json'
 appendPath = './crawlers/soroush_crawler/logged.json'
@@ -25,7 +25,7 @@ for d in data['messages'] :
     o['message_id'] = hashlib.md5(tagText.encode()).hexdigest()
     o['id'] = o['message_id']
 
-    o['hashtags'] = []
+    o['hashtags'] = GetHashtags(d['text'])
     o['keywords'] = d['frequency_word']
 
     out['messages'].append(o)
@@ -49,6 +49,7 @@ out['total'] = len(out['messages'])
 preData['total'] = len(preData['messages'])
 
 with open(path , 'w') as f:
+    # json.dump(out,f)
     json.dump(preData,f)
 
 print(str(out['total']) , ' data added to dataset file.')
