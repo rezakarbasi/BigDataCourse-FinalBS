@@ -20,13 +20,14 @@ import json
 import sys
 sys.path.append('/media/arzkarbasi/DataDrive/PersonalFiles/Projects/1_DarCProj/Big Data/final project/BigDataCourse-FinalBS/crawlers/soroush_crawler/online crawler')
 from seleniumCrawler import SeleniumSoroushCrawler
-
+import time
 
 class SoroushCrawlerObject:
-    def __init__(self, channelsList, kafkaTopic, kafkaPort=9092, crawlerType='selenium'):
+    def __init__(self, channelsList, kafkaTopic='sample', kafkaPort=9092, crawlerType='selenium', pathData = 'Data.json'):
         if 'selenium' in crawlerType.lower():
             self.crawler = SeleniumSoroushCrawler
 
+        self.pathData = pathData
         self.channelList = []
         self.AddChannel(channelsList)
         self.kafkaTopic = kafkaTopic
@@ -34,19 +35,44 @@ class SoroushCrawlerObject:
         # kafka init
         self.producer = KafkaProducer(
             bootstrap_servers='localhost:'+str(kafkaPort),
-            value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+            value_serializer=lambda v: json.dumps(v).encode('utf-8')) # utf to unicode
         # self.producer = KafkaProducer(bootstrap_servers='localhost:9092')
+
+        with open(self.pathData,'r') as f:
+            self.pastData = json.load(f)
+        self.ids = map(lambda  z: z['id'],self.pastData['messages'])
+
+    def MakeEmptyDataFile(self):
+        emptyDict = {'total' : 0 , 'messages' : []}
+        with open(self.pathData , 'w') as f:
+            json.dump(emptyDict,f)
+            self.pastData = emptyDict
+        self.ids = map(lambda  z: z['id'],self.pastData['messages'])
 
     def Run(self):
         out = {}
         out['total'] = 0
         out['messages'] = []
         for data in self.crawler(self.channelList):
-            out['messages'].append(data)
-            out['total'] = len(out['messages'])
-            
-            self.producer.send(self.kafkaTopic,out)
-            out['messages'] = []
+            if not(data['id'] in self.ids):
+                out['messages'].append(data)
+        
+        out['total'] = len(out['messages'])
+
+        self.producer.send(self.kafkaTopic,out)
+        # bedooone in sleep kar nmikard !
+        time.sleep(1)
+        self.AddToPastData(out)
+
+    def AddToPastData(self , data=dict):
+        for i in data['messages']:
+            self.pastData['messages'].append(i)
+        self.pastData['total'] = len(self.pastData['messages'])
+        self.ids = list(map(lambda  z: z['id'],self.pastData['messages']))
+
+    def SaveTheData(self):
+        with open(self.pathData,'w') as f:
+            json.dump(self.pastData,f)
 
     def AddChannel(self,newChannels):
         if type(newChannels) != list :

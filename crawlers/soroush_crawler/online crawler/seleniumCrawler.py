@@ -74,7 +74,7 @@ def SeleniumDecoder(postSource,postText,channelName):
 
 
 def SeleniumSoroushCrawler(channelLists=['bourseabad']):
-
+    
     driver = webdriver.Chrome('/home/arzkarbasi/Downloads/chromedriver_linux64/chromedriver')
 
     baseUrl = 'https://what.sapp.ir/'
