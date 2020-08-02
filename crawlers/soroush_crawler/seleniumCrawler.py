@@ -33,11 +33,16 @@ for i in channelLists :
 
         post = p[:endIdx]
 
-        i+=1
-        if i>1 :
-            out.append(json.loads(post))
+        p=p[endIdx+len(endString):]
+        idx1 = p.find('<div')
+        if idx1<10 :
+            p = p[idx1+4:]
+            p = p[p.find('>')+1:]
+            text = p[:p.find('</div>')]
+            out.append([json.loads(post),text])
 
         idx = p.find(startString)
+
 
 driver.close()
 print(len(out))
