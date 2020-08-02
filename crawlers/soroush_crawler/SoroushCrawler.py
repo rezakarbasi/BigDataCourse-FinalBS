@@ -42,6 +42,19 @@ class SoroushCrawlerObject:
             self.pastData = json.load(f)
         self.ids = map(lambda  z: z['id'],self.pastData['messages'])
 
+    def SendFile(self,fileName,sendOnce=False,delayTime=2):
+        with open(fileName,'r') as f:
+            data = json.load(f)
+        
+        if sendOnce :
+            self.producer.send(self.kafkaTopic,data)
+        else :
+            for d in data['messages'] :
+                o = {'total':1,'messages':[d]}
+                self.producer.send(self.kafkaTopic,o)
+                time.sleep(delayTime)
+
+
     def MakeEmptyDataFile(self):
         emptyDict = {'total' : 0 , 'messages' : []}
         with open(self.pathData , 'w') as f:
@@ -49,20 +62,25 @@ class SoroushCrawlerObject:
             self.pastData = emptyDict
         self.ids = map(lambda  z: z['id'],self.pastData['messages'])
 
-    def Run(self):
-        out = {}
-        out['total'] = 0
-        out['messages'] = []
-        for data in self.crawler(self.channelList):
-            if not(data['id'] in self.ids):
-                out['messages'].append(data)
-        
-        out['total'] = len(out['messages'])
+    def Run(self,doOnce=False,periodTime=600):
+        while True:
+            out = {}
+            out['total'] = 0
+            out['messages'] = []
+            for data in self.crawler(self.channelList):
+                if not(data['id'] in self.ids):
+                    out['messages'].append(data)
+            
+            out['total'] = len(out['messages'])
 
-        self.producer.send(self.kafkaTopic,out)
-        # bedooone in sleep kar nmikard !
-        time.sleep(1)
-        self.AddToPastData(out)
+            self.producer.send(self.kafkaTopic,out)
+            # bedooone in sleep kar nmikard !
+            time.sleep(1)
+            self.AddToPastData(out)
+
+            time.sleep(periodTime)
+            if doOnce:
+                break
 
     def AddToPastData(self , data=dict):
         for i in data['messages']:
