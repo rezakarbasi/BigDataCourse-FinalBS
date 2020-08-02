@@ -1,0 +1,8 @@
+import sys
+sys.path.append('/media/arzkarbasi/DataDrive/PersonalFiles/Projects/1_DarCProj/Big Data/final project/BigDataCourse-FinalBS/crawlers/soroush_crawler')
+from SoroushCrawler import SoroushCrawlerObject
+
+channelLists = ['boursnema','bourseabad','boursetraining','bourseprofile','farachart_signal','boursecodal','Outbears','bourse0ta1000','bourselaws','boursecode','boursetraining','BourseProfile','boursefaa']
+
+sc = SoroushCrawlerObject(channelLists,'sample')
+sc.Run()
