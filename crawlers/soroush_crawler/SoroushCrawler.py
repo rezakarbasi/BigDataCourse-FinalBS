@@ -86,7 +86,7 @@ class SoroushCrawlerObject:
     def Run(self,doOnce=False,periodTime=600):
         while True:
             out = []
-            for data in self.crawler(self.channelList):
+            for data in self.crawler(self.channelList,self.symbols,self.keywords):
                 if not(data['id'] in self.ids):
                     self.SendAData(data)
                     out.append(data)

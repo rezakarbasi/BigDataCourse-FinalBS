@@ -9,18 +9,15 @@ channelLists = ['bourseprofile','boursnema' , 'bourseabad','boursetraining','far
 
 sc = SoroushCrawlerObject(channelLists,'sample')
 
-# arbitary send "bourseprofile" channel data
-# dataSetPath = '/media/arzkarbasi/DataDrive/PersonalFiles/Projects/1_DarCProj/Big Data/final project/BigDataCourse-FinalBS/crawlers/soroush_crawler/offline crawler/DataSet.json'
-# th1 = threading.Thread(target=sc.SendFile,args=(dataSetPath,False,5,))
-# th1.start()
-
 # arbitary send past data
-th2 = threading.Thread(target=sc.SendPastData,args=(1,))
+th2 = threading.Thread(target=sc.SendPastData,args=(0,))
 th2.start()
 
+time.sleep(5)
+
 # for streaming data
-# th3 = threading.Thread(target=sc.Run,args=(False,600,))
-# th3.start()
+th3 = threading.Thread(target=sc.Run,args=(False,600,))
+th3.start()
 
 # add this section at end of code
-# sc.SaveTheData()
+sc.SaveTheData()
