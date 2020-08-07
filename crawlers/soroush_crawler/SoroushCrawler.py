@@ -23,7 +23,7 @@ from seleniumCrawler import SeleniumSoroushCrawler
 import time
 
 class SoroushCrawlerObject:
-    def __init__(self, channelsList, kafkaTopic='sample', kafkaPort=9092, crawlerType='selenium', pathData = 'Data.json'):
+    def __init__(self, channelsList, kafkaTopic='sample', kafkaPort=9092, crawlerType='selenium', pathData = 'Data.json', symPath='symbols.json', keyPath='keywords.json'):
         if 'selenium' in crawlerType.lower():
             self.crawler = SeleniumSoroushCrawler
 
@@ -38,9 +38,19 @@ class SoroushCrawlerObject:
             value_serializer=lambda v: json.dumps(v).encode('utf-8')) # utf to unicode
         # self.producer = KafkaProducer(bootstrap_servers='localhost:9092')
 
+        self.symPath = symPath
+        self.keyPath = keyPath
+
         with open(self.pathData,'r') as f:
             self.pastData = json.load(f)
             self.unSentData = self.pastData
+
+        with open(self.keyPath,'r') as f:
+            self.keywords = json.load(f)
+
+        with open(self.symPath,'r') as f:
+            self.symbols = json.load(f)
+
         self.ids = list(map(lambda  z: z['id'],self.pastData['messages']))
 
     def SendAData(self,d):
@@ -48,7 +58,7 @@ class SoroushCrawlerObject:
 
 
     def SendPastData(self,delayTime=1):
-        for d in self.unSentData :
+        for d in self.unSentData['messages'] :
             self.SendAData(d)
             time.sleep(delayTime)
         self.unSentData = []

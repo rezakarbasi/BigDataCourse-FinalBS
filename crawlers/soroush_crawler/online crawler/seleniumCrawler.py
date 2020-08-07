@@ -6,13 +6,14 @@ from bs4 import BeautifulSoup
 import time
 import hashlib
 import json
+from hazm import Normalizer
 
 import sys
 sys.path.append('/media/arzkarbasi/DataDrive/PersonalFiles/Projects/1_DarCProj/Big Data/final project/BigDataCourse-FinalBS/crawlers')
-from functions import GetDataFromField , GetHashtags
+from functions import GetDataFromField , GetHashtags , GetLinks , FindWords
 
 
-def SeleniumDecoder(postSource,postText,channelName):
+def SeleniumDecoder(postSource,postText,channelName,syms,keywords):
 
     d=postSource
     o={}
@@ -20,16 +21,15 @@ def SeleniumDecoder(postSource,postText,channelName):
     o['channel_id'] = channelName
 
     b , typee = GetDataFromField(d,['@type'])
+    b1 , imUrl = GetDataFromField(d,['image'])
     if b :
         if 'video' in typee.lower():
             o['type']='VIDEO'
         else :
-            b1 , imUrl = GetDataFromField(d,['image'])
-            imUrl = imUrl[0]
             b2 , logoUrl = GetDataFromField(d,['publisher','logo','url'])
 
             if b1 and b2 :
-                if imUrl == logoUrl :
+                if imUrl[0] == logoUrl :
                     o['type']='TEXT'
                 else :
                     o['type']='IMAGE'
@@ -40,6 +40,10 @@ def SeleniumDecoder(postSource,postText,channelName):
         o['type']='error 1'
         print('type error 1')
     
+    o['image'] = []
+    if b1:
+        o['image'] = imUrl
+
     b,h = GetDataFromField(d,'headline')
     if b :
         o['title']=h
@@ -48,6 +52,8 @@ def SeleniumDecoder(postSource,postText,channelName):
 
     b,t = GetDataFromField(d,'description')
     if b :
+        normalizer = Normalizer()
+        t = normalizer.normalize(t)
         o['text']=t
     else :
         print('description error')
@@ -65,13 +71,19 @@ def SeleniumDecoder(postSource,postText,channelName):
     o['id'] = o['message_id']
 
     o['hashtags'] = GetHashtags(postText)
-    o['keywords'] = []    
+    o['keywords'] = FindWords(keywords,o['text'])
+
+    o['links'] = GetLinks(postText) 
+
+    o['symbols'] = FindWords(syms,o['text'])
+
+    o['ROWKEY'] = o['id']
 
     return o
 
 
 
-def SeleniumSoroushCrawler(channelLists=['bourseabad']):
+def SeleniumSoroushCrawler(channelLists,syms,keywords):
     
     driver = webdriver.Chrome('/home/arzkarbasi/Downloads/chromedriver_linux64/chromedriver')
 
@@ -102,7 +114,7 @@ def SeleniumSoroushCrawler(channelLists=['bourseabad']):
                 p = p[p.find('>')+1:]
                 text = p[:p.find('</div>')]
 
-                yield SeleniumDecoder(json.loads(post),text,i)
+                yield SeleniumDecoder(json.loads(post),text,i,syms,keywords)
 
             idx = p.find(startString)
 
