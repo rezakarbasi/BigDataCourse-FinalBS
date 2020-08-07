@@ -1,4 +1,4 @@
-
+# web driver must bokhore be google chrome
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
@@ -60,8 +60,6 @@ def SeleniumDecoder(postSource,postText,channelName):
             print('error publish date')
     o['timestampISO']=pub
 
-    # print(o['channel_id'])
-    # print(o['timestampISO'])
     tagText='sapp/'+o['channel_id']+'/'+o['timestampISO']
     o['message_id'] = hashlib.md5(tagText.encode()).hexdigest()
     o['id'] = o['message_id']

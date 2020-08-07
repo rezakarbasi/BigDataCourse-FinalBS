@@ -10,7 +10,7 @@
 # bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic sample
 
 # # Consumer command
-# bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
+# bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic sample --from-beginning
 
 
 
@@ -40,18 +40,29 @@ class SoroushCrawlerObject:
 
         with open(self.pathData,'r') as f:
             self.pastData = json.load(f)
-        self.ids = map(lambda  z: z['id'],self.pastData['messages'])
+            self.unSentData = self.pastData
+        self.ids = list(map(lambda  z: z['id'],self.pastData['messages']))
 
-    def SendFile(self,fileName,sendOnce=False,delayTime=2):
+    def SendAData(self,d):
+        self.producer.send(self.kafkaTopic,d)
+
+
+    def SendPastData(self,delayTime=1):
+        for d in self.unSentData :
+            self.SendAData(d)
+            time.sleep(delayTime)
+        self.unSentData = []
+
+    def SendFile(self,fileName,sendOnce=False,delayTime=5):
         with open(fileName,'r') as f:
             data = json.load(f)
         
         if sendOnce :
-            self.producer.send(self.kafkaTopic,data)
+            self.SendAData(data['messages'])
         else :
             for d in data['messages'] :
-                o = {'total':1,'messages':[d]}
-                self.producer.send(self.kafkaTopic,o)
+                # o = {'total':1,'messages':[d]}
+                self.SendAData(d)
                 time.sleep(delayTime)
 
 
@@ -64,26 +75,21 @@ class SoroushCrawlerObject:
 
     def Run(self,doOnce=False,periodTime=600):
         while True:
-            out = {}
-            out['total'] = 0
-            out['messages'] = []
+            out = []
             for data in self.crawler(self.channelList):
                 if not(data['id'] in self.ids):
-                    out['messages'].append(data)
+                    self.SendAData(data)
+                    out.append(data)
             
-            out['total'] = len(out['messages'])
-
-            self.producer.send(self.kafkaTopic,out)
-            # bedooone in sleep kar nmikard !
-            time.sleep(1)
             self.AddToPastData(out)
-
-            time.sleep(periodTime)
+            self.SaveTheData()
+            
             if doOnce:
                 break
+            time.sleep(periodTime)
 
-    def AddToPastData(self , data=dict):
-        for i in data['messages']:
+    def AddToPastData(self , data=list):
+        for i in data:
             self.pastData['messages'].append(i)
         self.pastData['total'] = len(self.pastData['messages'])
         self.ids = list(map(lambda  z: z['id'],self.pastData['messages']))
