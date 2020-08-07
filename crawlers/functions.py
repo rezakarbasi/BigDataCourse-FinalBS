@@ -69,3 +69,7 @@ def FindWords(syms,normText):
             out.append(i)
 
     return out 
+
+def ListToString(l:list):
+    a=str(l)[1:-1]
+    return a.replace("'",'').replace('"','').replace(' ','')

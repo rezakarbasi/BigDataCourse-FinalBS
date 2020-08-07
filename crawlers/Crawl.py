@@ -7,10 +7,12 @@ import time
 
 channelLists = ['bourseprofile','boursnema' , 'bourseabad','boursetraining','farachart_signal','boursecodal','Outbears','bourse0ta1000','bourselaws','boursecode','boursetraining','BourseProfile','boursefaa']
 
-sc = SoroushCrawlerObject(channelLists,'sample')
+topicName = 'sample'
+
+sc = SoroushCrawlerObject(channelLists,topicName)
 
 # arbitary send past data
-th2 = threading.Thread(target=sc.SendPastData,args=(0,))
+th2 = threading.Thread(target=sc.SendPastData,args=(5,))
 th2.start()
 
 time.sleep(5)

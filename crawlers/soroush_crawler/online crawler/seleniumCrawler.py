@@ -10,7 +10,7 @@ from hazm import Normalizer
 
 import sys
 sys.path.append('/media/arzkarbasi/DataDrive/PersonalFiles/Projects/1_DarCProj/Big Data/final project/BigDataCourse-FinalBS/crawlers')
-from functions import GetDataFromField , GetHashtags , GetLinks , FindWords
+from functions import GetDataFromField , GetHashtags , GetLinks , FindWords , ListToString
 
 
 def SeleniumDecoder(postSource,postText,channelName,syms,keywords):
@@ -77,7 +77,11 @@ def SeleniumDecoder(postSource,postText,channelName,syms,keywords):
 
     o['symbols'] = FindWords(syms,o['text'])
 
+    # custom fields
     o['ROWKEY'] = o['id']
+    o['hashtags_str'] = ListToString(o['hashtags'])
+    o['keywords_str'] = ListToString(o['keywords'])
+    o['symbols_str'] = ListToString(o['symbols'])
 
     return o
 
