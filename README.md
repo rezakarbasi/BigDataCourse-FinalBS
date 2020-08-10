@@ -1,2 +1,6 @@
-# BigDataCourse-FinalBS
-this is our final project of big data course .
+<div dir="rtl"><b>پروژه نهایی درس کلان داده</b></div>
+
+<div dir="rtl">
+کد های هر بخش در شاخه مربوطه آمده است :
+  - بخش اول : مربوط به خزش پیامرسان سروش  در شاخه part1_Karbasiآمده است 
+</div>
