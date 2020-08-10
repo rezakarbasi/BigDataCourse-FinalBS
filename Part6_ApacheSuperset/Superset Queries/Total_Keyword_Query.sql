@@ -1,0 +1,5 @@
+SELECT CHANNEL_ID, SUM(keywords_len) As Total_Keyword
+FROM Channel.data
+WHERE empty(KEYWORDS_STR) == 0
+GROUP BY CHANNEL_ID
+ORDER By CHANNEL_ID DESC 

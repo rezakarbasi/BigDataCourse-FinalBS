@@ -1,0 +1,5 @@
+SELECT CHANNEL_ID, SUM(hashtags_len) As Total_Hashtag
+FROM Channel.data
+WHERE empty(HASHTAGS_STR) == 0
+GROUP BY CHANNEL_ID 
+ORDER By CHANNEL_ID DESC 
