@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Recent Hashtags</title>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center">Recent Hashtags</h1>
+    {% for result in results %}
+    {{ result }}<br>
+    {% endfor %}
+</div>
+{% endblock %}
