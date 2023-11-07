@@ -11,3 +11,18 @@
     <li>بخش ششم : این بخش مربوط به ApacheSuperset است و در شاخه <a href="https://github.com/rezakarbasi/BigDataCourse-FinalBS/tree/part6_Pourmehrani">part6_Pourmehrani</a> کد آن امده است .</li>
   </ul>
 </div>
+
+---
+
+<b>The final project of the big data course</b>
+<div>
+    The codes of each section are listed in the corresponding branch:
+    <ul>
+        <li>The first part: It is related to the crawling of Soroush messengers and connection to Kafka in the <a href="https://github.com/rezakarbasi/BigDataCourse-FinalBS/tree/part1_Karbasi">part1_Karbasi</a> branch</li>
+        <li>The second part: The works related to Elasticsearch, Redis and Kibana are in the <a href="https://github.com/rezakarbasi/BigDataCourse-FinalBS/tree/part2_Baghershahi">part2_Bagherhshahi</a> branch.</li>
+        <li>The third part: Connection to Cassandra and its related matters are mentioned in <a href="https://github.com/rezakarbasi/BigDataCourse-FinalBS/tree/part3_haidrezasoltanalizadeh">part3_Soltanalizadeh</a></li>
+        <li>The fourth part: Connecting to Redis and its related tasks are listed in the <a href="https://github.com/rezakarbasi/BigDataCourse-FinalBS/tree/part4_Baghershahi">part4_Bagherhshahi</a> branch.</li>
+        <li>Part 5: This part deals with the work related to connecting Kafka to ClickHouse and related matters, and its branch name is <a href="https://github.com/rezakarbasi/BigDataCourse-FinalBS/tree/part5_Pourmehrani">part5_Pourmehrani</a></li>
+        <li>The sixth part: This part is related to ApacheSuperset and its code is in the <a href="https://github.com/rezakarbasi/BigDataCourse-FinalBS/tree/part6_Pourmehrani">part6_Pourmehrani</a> branch.</li>
+    </ul>
+</div>
